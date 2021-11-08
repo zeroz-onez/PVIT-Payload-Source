@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_title">USB Serial</string>
+    <string name="app_name">Arduino Serial</string>
+    <string name="refreshing">Refreshing…</string>
+    <string name="textBtnRTS">RTS - Request To Send</string>
+    <string name="textBtnDTR">DTR - Data Terminal Ready</string>
+
+</resources>

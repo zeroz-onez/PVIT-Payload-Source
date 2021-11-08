@@ -1,0 +1,75 @@
+com.example.arduinoserial	DeviceListActivity.java	/^package com.example.arduinoserial;$/;"	p
+DeviceListActivity	DeviceListActivity.java	/^public class DeviceListActivity extends Activity {$/;"	c
+TAG	DeviceListActivity.java	/^    private final String TAG = DeviceListActivity.class.getSimpleName();$/;"	f	class:DeviceListActivity	file:
+mUsbManager	DeviceListActivity.java	/^    private UsbManager mUsbManager;$/;"	f	class:DeviceListActivity	file:
+mListView	DeviceListActivity.java	/^    private ListView mListView;$/;"	f	class:DeviceListActivity	file:
+mProgressBarTitle	DeviceListActivity.java	/^    private TextView mProgressBarTitle;$/;"	f	class:DeviceListActivity	file:
+mProgressBar	DeviceListActivity.java	/^    private ProgressBar mProgressBar;$/;"	f	class:DeviceListActivity	file:
+MESSAGE_REFRESH	DeviceListActivity.java	/^    private static final int MESSAGE_REFRESH = 101;$/;"	f	class:DeviceListActivity	file:
+REFRESH_TIMEOUT_MILLIS	DeviceListActivity.java	/^    private static final long REFRESH_TIMEOUT_MILLIS = 5000;$/;"	f	class:DeviceListActivity	file:
+mHandler	DeviceListActivity.java	/^    private final Handler mHandler = new Handler() {$/;"	f	class:DeviceListActivity	file:
+mEntries	DeviceListActivity.java	/^    private List<UsbSerialPort> mEntries = new ArrayList<UsbSerialPort>();$/;"	f	class:DeviceListActivity	file:
+mAdapter	DeviceListActivity.java	/^    private ArrayAdapter<UsbSerialPort> mAdapter;$/;"	f	class:DeviceListActivity	file:
+onCreate	DeviceListActivity.java	/^    public void onCreate(Bundle savedInstanceState) {$/;"	m	class:DeviceListActivity
+onResume	DeviceListActivity.java	/^    protected void onResume() {$/;"	m	class:DeviceListActivity
+onPause	DeviceListActivity.java	/^    protected void onPause() {$/;"	m	class:DeviceListActivity
+onRequestPermissionsResult	DeviceListActivity.java	/^    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {$/;"	m	class:DeviceListActivity
+refreshDeviceList	DeviceListActivity.java	/^    private void refreshDeviceList() {$/;"	m	class:DeviceListActivity	file:
+showProgressBar	DeviceListActivity.java	/^    private void showProgressBar() {$/;"	m	class:DeviceListActivity	file:
+hideProgressBar	DeviceListActivity.java	/^    private void hideProgressBar() {$/;"	m	class:DeviceListActivity	file:
+showConsoleActivity	DeviceListActivity.java	/^    private void showConsoleActivity(UsbSerialPort port) {$/;"	m	class:DeviceListActivity	file:
+com.example.arduinoserial	SerialConsoleActivity.java	/^package com.example.arduinoserial;$/;"	p
+SerialConsoleActivity	SerialConsoleActivity.java	/^public class SerialConsoleActivity extends Activity {$/;"	c
+TAG	SerialConsoleActivity.java	/^    private final String TAG = SerialConsoleActivity.class.getSimpleName();$/;"	f	class:SerialConsoleActivity	file:
+BAUD_RATE	SerialConsoleActivity.java	/^    private static final int BAUD_RATE = 115200;$/;"	f	class:SerialConsoleActivity	file:
+BLOCK_LENGTH	SerialConsoleActivity.java	/^    private static final int BLOCK_LENGTH = 1000;$/;"	f	class:SerialConsoleActivity	file:
+sPort	SerialConsoleActivity.java	/^    private static UsbSerialPort sPort = null;$/;"	f	class:SerialConsoleActivity	file:
+ORIENTATIONS	SerialConsoleActivity.java	/^    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();$/;"	f	class:SerialConsoleActivity	file:
+mTitleTextView	SerialConsoleActivity.java	/^    private TextView mTitleTextView;$/;"	f	class:SerialConsoleActivity	file:
+mDumpTextView	SerialConsoleActivity.java	/^    private TextView mDumpTextView;$/;"	f	class:SerialConsoleActivity	file:
+mScrollView	SerialConsoleActivity.java	/^    private ScrollView mScrollView;$/;"	f	class:SerialConsoleActivity	file:
+mExecutor	SerialConsoleActivity.java	/^    private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();$/;"	f	class:SerialConsoleActivity	file:
+mSerialIoManager	SerialConsoleActivity.java	/^    private SerialInputOutputManager mSerialIoManager;$/;"	f	class:SerialConsoleActivity	file:
+mListener	SerialConsoleActivity.java	/^    private final SerialInputOutputManager.Listener mListener =$/;"	f	class:SerialConsoleActivity	file:
+cameraId	SerialConsoleActivity.java	/^    private String cameraId;$/;"	f	class:SerialConsoleActivity	file:
+cameraDevice	SerialConsoleActivity.java	/^    protected CameraDevice cameraDevice;$/;"	f	class:SerialConsoleActivity
+imageReader	SerialConsoleActivity.java	/^    private ImageReader imageReader;$/;"	f	class:SerialConsoleActivity	file:
+cameraClosed	SerialConsoleActivity.java	/^    private boolean cameraClosed = false;$/;"	f	class:SerialConsoleActivity	file:
+q	SerialConsoleActivity.java	/^    private byte q = 90;$/;"	f	class:SerialConsoleActivity	file:
+fileName	SerialConsoleActivity.java	/^    private String fileName;$/;"	f	class:SerialConsoleActivity	file:
+fileSize	SerialConsoleActivity.java	/^    private long fileSize;$/;"	f	class:SerialConsoleActivity	file:
+mCameraOpenCloseLock	SerialConsoleActivity.java	/^    private Semaphore mCameraOpenCloseLock = new Semaphore(1);$/;"	f	class:SerialConsoleActivity	file:
+captureListener	SerialConsoleActivity.java	/^    private final CameraCaptureSession.CaptureCallback captureListener = new CameraCaptureSession.CaptureCallback() {$/;"	f	class:SerialConsoleActivity	file:
+onImageAvailableListener	SerialConsoleActivity.java	/^    private final ImageReader.OnImageAvailableListener onImageAvailableListener = new ImageReader.OnImageAvailableListener() {$/;"	f	class:SerialConsoleActivity	file:
+stateCallback	SerialConsoleActivity.java	/^    private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {$/;"	f	class:SerialConsoleActivity	file:
+pictureCache	SerialConsoleActivity.java	/^    LruCache<String, byte[]> pictureCache = new LruCache<>(5);$/;"	f	class:SerialConsoleActivity
+autoScroll	SerialConsoleActivity.java	/^    private boolean autoScroll = true;$/;"	f	class:SerialConsoleActivity	file:
+onCreate	SerialConsoleActivity.java	/^    public void onCreate(Bundle savedInstanceState) {$/;"	m	class:SerialConsoleActivity
+disconnect	SerialConsoleActivity.java	/^    private void disconnect() {$/;"	m	class:SerialConsoleActivity	file:
+connect	SerialConsoleActivity.java	/^    private void connect() {$/;"	m	class:SerialConsoleActivity	file:
+onPause	SerialConsoleActivity.java	/^    protected void onPause() {$/;"	m	class:SerialConsoleActivity
+showStatus	SerialConsoleActivity.java	/^    void showStatus(TextView theTextView, String theLabel, boolean theValue) {$/;"	m	class:SerialConsoleActivity
+onResume	SerialConsoleActivity.java	/^    protected void onResume() {$/;"	m	class:SerialConsoleActivity
+stopIoManager	SerialConsoleActivity.java	/^    private void stopIoManager() {$/;"	m	class:SerialConsoleActivity	file:
+startIoManager	SerialConsoleActivity.java	/^    private void startIoManager() {$/;"	m	class:SerialConsoleActivity	file:
+onDeviceStateChange	SerialConsoleActivity.java	/^    private void onDeviceStateChange() {$/;"	m	class:SerialConsoleActivity	file:
+ListenerCDT	SerialConsoleActivity.java	/^    class ListenerCDT extends CountDownTimer {$/;"	c	class:SerialConsoleActivity
+l	SerialConsoleActivity.java	/^        LocationListener l;$/;"	f	class:SerialConsoleActivity.ListenerCDT
+canceled	SerialConsoleActivity.java	/^        boolean canceled = false;$/;"	f	class:SerialConsoleActivity.ListenerCDT
+cancel	SerialConsoleActivity.java	/^        public void cancel(boolean trigger) {$/;"	m	class:SerialConsoleActivity.ListenerCDT
+ListenerCDT	SerialConsoleActivity.java	/^        ListenerCDT(long millisInFuture) {$/;"	m	class:SerialConsoleActivity.ListenerCDT
+onTick	SerialConsoleActivity.java	/^        public void onTick(long l) {$/;"	m	class:SerialConsoleActivity.ListenerCDT
+onFinish	SerialConsoleActivity.java	/^        public void onFinish() {$/;"	m	class:SerialConsoleActivity.ListenerCDT
+updateReceivedData	SerialConsoleActivity.java	/^    private void updateReceivedData(byte[] data) {$/;"	m	class:SerialConsoleActivity	file:
+print	SerialConsoleActivity.java	/^    private void print(String text) {$/;"	m	class:SerialConsoleActivity	file:
+HEX_ARRAY	SerialConsoleActivity.java	/^    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();$/;"	f	class:SerialConsoleActivity	file:
+bytesToHex	SerialConsoleActivity.java	/^    public static String bytesToHex(byte[] bytes) {$/;"	m	class:SerialConsoleActivity
+sendMessage	SerialConsoleActivity.java	/^    private void sendMessage(byte[] messageBack) {$/;"	m	class:SerialConsoleActivity	file:
+sendMessage	SerialConsoleActivity.java	/^    private void sendMessage(String messageBack) {$/;"	m	class:SerialConsoleActivity	file:
+openCamera	SerialConsoleActivity.java	/^    private void openCamera() {$/;"	m	class:SerialConsoleActivity	file:
+getOrientation	SerialConsoleActivity.java	/^    int getOrientation() {$/;"	m	class:SerialConsoleActivity
+takePicture	SerialConsoleActivity.java	/^    private void takePicture() throws CameraAccessException {$/;"	m	class:SerialConsoleActivity	file:
+getGalleryPath	SerialConsoleActivity.java	/^    String getGalleryPath() {$/;"	m	class:SerialConsoleActivity
+saveImageAndSendResponse	SerialConsoleActivity.java	/^    private void saveImageAndSendResponse(final byte[] bytes) {$/;"	m	class:SerialConsoleActivity	file:
+closeCamera	SerialConsoleActivity.java	/^    private void closeCamera() {$/;"	m	class:SerialConsoleActivity	file:
+show	SerialConsoleActivity.java	/^    static void show(Context context, UsbSerialPort port) {$/;"	m	class:SerialConsoleActivity

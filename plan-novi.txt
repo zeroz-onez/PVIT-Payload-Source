@@ -1,0 +1,4 @@
+umesto S fn.jpg -> fn_x.jpg
+unutar fn_x.jpg paketi se uvek svi salju
+a fn_x+1.jpg kao i do sad za sledeci paket
+P fn.jpg vrati broj delova
