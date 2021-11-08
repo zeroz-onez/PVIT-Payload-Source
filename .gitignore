@@ -41,3 +41,4 @@ local.properties
 *.DS_Store
 proguard/
 jacoco.exec
+*.zip
