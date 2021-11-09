@@ -1,1 +1,1 @@
-include ':app', ':usb-serial-for-android:usbSerialForAndroid'
+include ':app', ':USBSerial:hoho-Library'
