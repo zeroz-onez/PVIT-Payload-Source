@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_seakingspace_logo.xml" value="0.33" />
         <entry key="app/src/main/res/layout/main.xml" value="0.18703703703703703" />
         <entry key="app/src/main/res/layout/serial_console.xml" value="0.1962962962962963" />
       </map>
