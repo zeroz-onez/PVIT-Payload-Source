@@ -24,6 +24,8 @@ package com.hoho.driver;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 
+import androidx.annotation.NonNull;
+
 import java.io.IOException;
 
 /**
@@ -59,6 +61,7 @@ abstract class CommonUsbSerialPort implements UsbSerialPort {
         mWriteBuffer = new byte[DEFAULT_WRITE_BUFFER_SIZE];
     }
     
+    @NonNull
     @Override
     public String toString() {
         return String.format("<%s device_name=%s device_id=%s port_number=%s>",
@@ -71,10 +74,12 @@ abstract class CommonUsbSerialPort implements UsbSerialPort {
      *
      * @return the device
      */
+    @SuppressWarnings("unused")
     public final UsbDevice getDevice() {
         return mDevice;
     }
 
+    @SuppressWarnings("unused")
     @Override
     public int getPortNumber() {
         return mPortNumber;
@@ -84,6 +89,7 @@ abstract class CommonUsbSerialPort implements UsbSerialPort {
      * Returns the device serial number
      *  @return serial number
      */
+    @SuppressWarnings("unused")
     @Override
     public String getSerial() {
         return mConnection.getSerial();
@@ -95,6 +101,7 @@ abstract class CommonUsbSerialPort implements UsbSerialPort {
      *
      * @param bufferSize the size in bytes
      */
+    @SuppressWarnings("unused")
     public final void setReadBufferSize(int bufferSize) {
         synchronized (mReadBufferLock) {
             if (bufferSize == mReadBuffer.length) {
@@ -110,6 +117,7 @@ abstract class CommonUsbSerialPort implements UsbSerialPort {
      *
      * @param bufferSize the size in bytes
      */
+    @SuppressWarnings("unused")
     public final void setWriteBufferSize(int bufferSize) {
         synchronized (mWriteBufferLock) {
             if (bufferSize == mWriteBuffer.length) {
@@ -125,40 +133,50 @@ abstract class CommonUsbSerialPort implements UsbSerialPort {
     @Override
     public abstract void close() throws IOException;
 
+    @SuppressWarnings("unused")
     @Override
     public abstract int read(final byte[] dest, final int timeoutMillis) throws IOException;
 
     @Override
-    public abstract int write(final byte[] src, final int timeoutMillis) throws IOException;
+    public abstract void write(final byte[] src, final int timeoutMillis) throws IOException;
 
     @Override
     public abstract void setParameters(
             int baudRate, int dataBits, int stopBits, int parity) throws IOException;
 
+    @SuppressWarnings("unused")
     @Override
     public abstract boolean getCD() throws IOException;
 
+    @SuppressWarnings("unused")
     @Override
     public abstract boolean getCTS() throws IOException;
 
+    @SuppressWarnings("unused")
     @Override
     public abstract boolean getDSR() throws IOException;
 
+    @SuppressWarnings("unused")
     @Override
     public abstract boolean getDTR() throws IOException;
 
+    @SuppressWarnings("unused")
     @Override
     public abstract void setDTR(boolean value) throws IOException;
 
+    @SuppressWarnings("unused")
     @Override
     public abstract boolean getRI() throws IOException;
 
+    @SuppressWarnings("unused")
     @Override
     public abstract boolean getRTS() throws IOException;
 
+    @SuppressWarnings("unused")
     @Override
     public abstract void setRTS(boolean value) throws IOException;
 
+    @SuppressWarnings("unused")
     @Override
     public boolean purgeHwBuffers(boolean flushReadBuffers, boolean flushWriteBuffers) throws IOException {
         return !flushReadBuffers && !flushWriteBuffers;

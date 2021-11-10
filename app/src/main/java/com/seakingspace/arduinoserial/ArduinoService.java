@@ -32,13 +32,13 @@ import android.location.LocationManager;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Binder;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.PowerManager;
+
 
 import android.util.Log;
 import android.util.LruCache;
@@ -47,6 +47,8 @@ import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.WindowManager;
+
+import androidx.annotation.NonNull;
 
 import com.hoho.driver.UsbSerialPort;
 import com.hoho.util.SerialInputOutputManager;
@@ -70,6 +72,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -82,7 +85,7 @@ public class ArduinoService extends Service {
 
     private static final int BAUD_RATE = 115200;
     private static final int BLOCK_LENGTH = 200;
-    private static int CHUNK_SIZE = 40;
+    private static final int CHUNK_SIZE = 40;
 
     private static final int STATE_PREVIEW = 0;
     private static final int STATE_WAITING_LOCK = 1;
@@ -94,7 +97,6 @@ public class ArduinoService extends Service {
 
     private static final int MAX_PREVIEW_WIDTH = 1920;
     private static final int MAX_PREVIEW_HEIGHT = 1080;
-
 
     public UsbSerialPort mPort = null;
 
@@ -115,7 +117,7 @@ public class ArduinoService extends Service {
     private final SerialInputOutputManager.Listener mListener =
             new SerialInputOutputManager.Listener() {
 
-                StringBuilder previousData = new StringBuilder();
+                final StringBuilder previousData = new StringBuilder();
 
                 @Override
                 public void onRunError(Exception e) {
@@ -136,12 +138,7 @@ public class ArduinoService extends Service {
                         if (c == '\n') {
                             final String prev = previousData.toString().trim();
                             previousData.delete(0, previousData.length());
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    updateReceivedData(prev);
-                                }
-                            });
+                            runOnUiThread(() -> updateReceivedData(prev));
                         }
                         else {
                             previousData.append(c);
@@ -151,7 +148,7 @@ public class ArduinoService extends Service {
             };
 
     private String mCameraId;
-    private Semaphore mCameraOpenCloseLock = new Semaphore(1);
+    private final Semaphore mCameraOpenCloseLock = new Semaphore(1);
     private CameraCaptureSession mCaptureSession;
     protected CameraDevice mCameraDevice;
     private ImageReader mImageReader;
@@ -160,14 +157,14 @@ public class ArduinoService extends Service {
     private CaptureRequest.Builder mPreviewRequestBuilder;
     private CaptureRequest mPreviewRequest;
     private int mState = STATE_PREVIEW;
-    private SurfaceTexture mDummyPreview = new SurfaceTexture(1);
-    private Surface mDummySurface = new Surface(mDummyPreview);
+    private final SurfaceTexture mDummyPreview = new SurfaceTexture(1);
+    private final Surface mDummySurface = new Surface(mDummyPreview);
     private Size mPreviewSize;
     private boolean mFlashSupported;
     private boolean cameraClosed = true;
-    Queue<PhotoRequest> photoQueue = new LinkedBlockingQueue<>();
+    final Queue<PhotoRequest> photoQueue = new LinkedBlockingQueue<>();
 
-    private CameraCaptureSession.CaptureCallback mCaptureCallback
+    private final CameraCaptureSession.CaptureCallback mCaptureCallback
             = new CameraCaptureSession.CaptureCallback() {
 
         private int frameCount = 0;
@@ -181,7 +178,8 @@ public class ArduinoService extends Service {
                 case STATE_QUEUED: {
                     PhotoRequest request = photoQueue.peek();
                     long now = Calendar.getInstance().getTime().getTime();
-                    boolean delayPassed = request.burstDelay == 0 || (now - lastPictureTime) > request.burstDelay * 1000;
+                    assert request != null;
+                    boolean delayPassed = request.burstDelay == 0 || (now - lastPictureTime) > request.burstDelay * 1000L;
 
                     if (frameCount > 90 && delayPassed) {
                         frameCount = 0;
@@ -243,7 +241,6 @@ public class ArduinoService extends Service {
             process(partialResult);
         }
 
-        @SuppressLint("DefaultLocale")
         @Override
         public void onCaptureCompleted(CameraCaptureSession session,
                                        CaptureRequest request,
@@ -269,14 +266,9 @@ public class ArduinoService extends Service {
 
             buffer.get(bytes);
             image.close();
-            /*unlockFocus();
-            if (!photoQueue.isEmpty()) {
-                mState = STATE_QUEUED;
-                //lockFocus();
-            }
-            else {
-                //unlockFocus();
-            }*/
+
+            /* Removed unlockFocus() if statement that addressed state */
+
             closeCamera();
 
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -321,6 +313,7 @@ public class ArduinoService extends Service {
             Log.d(TAG, "camera onClosed");
             if (photoQueue.size() > 0) {
                 PhotoRequest request = photoQueue.peek();
+                assert request != null;
                 openCamera(request.front);
                 mState = STATE_QUEUED;
             }
@@ -328,9 +321,9 @@ public class ArduinoService extends Service {
         }
     };
 
-    LruCache<String, byte[]> pictureCache = new LruCache<>(5);
+    final LruCache<String, byte[]> pictureCache = new LruCache<>(5);
 
-    LocationListener listenerGps = new LocationListener() {
+    final LocationListener listenerGps = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
             lastKnown = location;
@@ -354,7 +347,7 @@ public class ArduinoService extends Service {
         }
     };
 
-    LocationListener listenerNetwork = new LocationListener() {
+    final LocationListener listenerNetwork = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
             if (lastKnownGps == null) {
@@ -381,7 +374,7 @@ public class ArduinoService extends Service {
     Location lastKnown, lastKnownGps;
 
     public Callback callback;
-    private MyBinder mLocalbinder = new MyBinder();
+    private final MyBinder mLocalbinder = new MyBinder();
 
     private PowerManager.WakeLock mWakeLock;
 
@@ -405,15 +398,13 @@ public class ArduinoService extends Service {
         handler = new Handler();
         super.onCreate();
 
-        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            nm.createNotificationChannel(new NotificationChannel("com.example.arduinoserial", "App Service", NotificationManager.IMPORTANCE_DEFAULT));
-            startForeground(1, new Notification.Builder(this).setContentTitle("Arduino Service").setChannelId("com.example.arduinoserial").build());
 
-        }
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.createNotificationChannel(new NotificationChannel("com.example.arduinoserial", "App Service", NotificationManager.IMPORTANCE_DEFAULT));
+        startForeground(1, new Notification.Builder(this).setContentTitle("Arduino Service").setChannelId("com.example.arduinoserial").build());
 
         mWakeLock = ((PowerManager) getSystemService(POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "arduinoserial:arduineservice");
-        mWakeLock.acquire();
+        mWakeLock.acquire(10*60*1000L /*10 minutes*/);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.hardware.usb.action.USB_DEVICE_DETACHED");
@@ -610,7 +601,14 @@ public class ArduinoService extends Service {
                     q = Byte.parseByte(split[0].substring(0, 2));
                     iso = Integer.parseInt(split[1]);
                     shutter = Long.parseLong(split[2]);
-                    wb = wbDict.get(split[3]) != null ? wbDict.get(split[3]) : CaptureRequest.CONTROL_AWB_MODE_AUTO;
+
+                    if (wbDict.get(split[3]) == null) {
+                        wb = CaptureRequest.CONTROL_AWB_MODE_AUTO;
+                    } else {
+                        // replaced wb = wbDict.get(split[3]) with...
+                        wb = 0;
+                    }
+
                     if (split.length >= 6) {
                         count = Integer.parseInt(split[4]);
                         delay = Integer.parseInt(split[5]);
@@ -707,6 +705,7 @@ public class ArduinoService extends Service {
             if (fullFile == null) {
                 try (DataInputStream dis = new DataInputStream(new FileInputStream(f))) {
                     fullFile = new byte[(int) f.length()];
+                    //noinspection ResultOfMethodCallIgnored
                     dis.read(fullFile);
 
                     pictureCache.put(path, fullFile);
@@ -722,7 +721,7 @@ public class ArduinoService extends Service {
                 }
             }
 
-            if (f.length() - block*BLOCK_LENGTH < 0) {
+            if (f.length() - (long) block *BLOCK_LENGTH < 0) {
                 Log.e(TAG, "updateReceivedData: f.length() - block*BLOCK_LENGTH < 0" + message);
                 return;
             }
@@ -766,9 +765,7 @@ public class ArduinoService extends Service {
                 System.arraycopy(chunkBytes, block * 200, messageBytes, 0, messageLength);
             }
 
-            /*if (callback != null) {
-                callback.onMessageSent(bytesToHex(messageBytes));
-            }*/
+            /* Removed callback if statement */
 
             byte hasMore = (byte) ((block + 1) * BLOCK_LENGTH < chunkBytes.length ? 1 : 0);
             if (sendNext) {
@@ -786,6 +783,7 @@ public class ArduinoService extends Service {
     }
 
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+    @SuppressWarnings("unused")
     public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
@@ -900,9 +898,8 @@ public class ArduinoService extends Service {
                     continue;
                 }
 
-                /*Size largest = Collections.max(
-                        Arrays.asList(map.getOutputSizes(ImageFormat.JPEG)),
-                        new CompareSizesByArea());*/
+                /* Removed image size comparison statement */
+
                 Size largest = new Size(1280, 720);
                 mImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(),
                         ImageFormat.JPEG, /*maxImages*/2);
@@ -933,7 +930,7 @@ public class ArduinoService extends Service {
 
                 // Check if the flash is supported.
                 Boolean available = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
-                mFlashSupported = available == null ? false : available;
+                mFlashSupported = available != null && available;
 
                 mCameraId = cameraId;
                 return;
@@ -1050,42 +1047,20 @@ public class ArduinoService extends Service {
 
     private void lockFocus() {
         mState = STATE_WAITING_LOCK;
-       /* try {
-            Log.d(TAG, "lockFocus");
-            // This is how to tell the camera to lock focus.
-            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
-                    CameraMetadata.CONTROL_AF_TRIGGER_START);
-            // Tell #mCaptureCallback to wait for the lock.
-            mState = STATE_WAITING_LOCK;
-            mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback,
-                    mBackgroundHandler);
-        } catch (CameraAccessException | NullPointerException e) {
-            e.printStackTrace();
-        }*/
+       /* Removed preview and capture statement */
     }
 
+    @SuppressWarnings("unused")
     private void unlockFocus() {
         mState = STATE_FOCUS_UNLOCKED;
-        /*try {
-            // Reset the auto-focus trigger
-            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
-                    CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
-            setAutoFlash(mPreviewRequestBuilder);
-            mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback,
-                    mBackgroundHandler);
-            // After this, the camera will go back to the normal state of preview.
-            mState = STATE_FOCUS_UNLOCKED;
-            mCaptureSession.setRepeatingRequest(mPreviewRequest, mCaptureCallback,
-                    mBackgroundHandler);
-        } catch (CameraAccessException | NullPointerException e) {
-            e.printStackTrace();
-        }*/
+        /* Removed reset and normalize statement */
     }
 
-    /**
+    /* *
      * Run the precapture sequence for capturing a still image. This method should be called when
      * we get a response in {@link #mCaptureCallback} from {@link #lockFocus()}.
      */
+
     private void runPrecaptureSequence() {
         try {
             Log.d(TAG, "runPrecaptureSequence");
@@ -1126,7 +1101,7 @@ public class ArduinoService extends Service {
                     CaptureRequest.CONTROL_AF_MODE_OFF);
             captureBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, 0f);
             PhotoRequest request = photoQueue.peek();
-            if (request.shutter != 0) {
+            if (Objects.requireNonNull(request).shutter != 0) {
                 captureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_OFF);
                 captureBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, request.shutter * 1000*1000);
             }
@@ -1142,8 +1117,9 @@ public class ArduinoService extends Service {
                 public void onCaptureCompleted(CameraCaptureSession session,
                                                CaptureRequest request,
                                                TotalCaptureResult result) {
-                    //unlockFocus();
-                    //closeCamera();
+
+                    /* Removed call to methods: unlockFocus() & closeCamera() */
+
                 }
             };
 
@@ -1160,17 +1136,20 @@ public class ArduinoService extends Service {
         File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/Arduino");
 
         if (!folder.exists()) {
+            //noinspection ResultOfMethodCallIgnored
             folder.mkdirs();
         }
 
         return folder.getAbsolutePath();
     }
 
+    @SuppressWarnings("unused")
     private int testSize(int q, int CHUNK_SIZE, String path) {
         File f = new File(getGalleryPath() + "/" + path);
         byte[] fullFile;
         try (DataInputStream dis = new DataInputStream(new FileInputStream(f))) {
             fullFile = new byte[(int) f.length()];
+            //noinspection ResultOfMethodCallIgnored
             dis.read(fullFile);
         }
         catch (Exception e) {
@@ -1253,27 +1232,16 @@ public class ArduinoService extends Service {
                 }
                 final int bestPathCopy = bestPath;
 
-                runOnUiThread(new Runnable() {
-                    @SuppressLint("DefaultLocale")
-                    @Override
-                    public void run() {
-                        sendMessage(photo.id, 'P', String.format("%s,%d,%d,%d", String.format("%d.png", bestPathCopy), fileSize, chunks, chunksX));
-                    }
-                });
+                runOnUiThread(() -> sendMessage(photo.id, 'P', String.format("%s,%d,%d,%d", String.format("%d.png", bestPathCopy), fileSize, chunks, chunksX)));
             }
         }
         else {
-            runOnUiThread(new Runnable() {
-                @SuppressLint("DefaultLocale")
-                @Override
-                public void run() {
-                    sendMessage(photo.id, 'P', String.format("%s,%d,%d,%d", fileName, fileSize, chunks, chunksX));
-                }
-            });
+            runOnUiThread(() -> sendMessage(photo.id, 'P', String.format("%s,%d,%d,%d", fileName, fileSize, chunks, chunksX)));
         }
 
     }
 
+    @SuppressWarnings("ConstantConditions")
     private static int[][] getEdgeImage(Bitmap image){
         int x = image.getWidth();
         int y = image.getHeight();
@@ -1306,10 +1274,12 @@ public class ArduinoService extends Service {
                 int val21 = pixels[(i + 1)*x + j];
                 int val22 = pixels[(i + 1)*x + j + 1];
 
+                @SuppressWarnings("PointlessArithmeticExpression")
                 int gx = -1 * val00 + 0 * val01 + 1 * val02
                         + -2 * val10 + 0 * val11 + 2 * val12
                         + -1 * val20 + 0 * val21 + 1 * val22;
 
+                @SuppressWarnings("PointlessArithmeticExpression")
                 int gy = -1 * val00 + -2 * val01 + -1 * val02
                         + 0 * val10 + 0 * val11 + 0 * val12
                         + 1 * val20 + 2 * val21 + 1 * val22;
@@ -1334,22 +1304,28 @@ public class ArduinoService extends Service {
         }
         return edgePixels;
     }
+
     public static int  getGrayScale(int rgb) {
         int r = (rgb >> 16) & 0xff;
         int g = (rgb >> 8) & 0xff;
         int b = (rgb) & 0xff;
 
         //from https://en.wikipedia.org/wiki/Grayscale, calculating luminance
-        int gray = (int)(0.2126 * r + 0.7152 * g + 0.0722 * b);
         //int gray = (r + g + b) / 3;
-        return gray;
+
+        /* Edited by Steven Wollman
+        Added " / 3" to end of equation and made int gray var inline
+        though I'm still not sure what this is used for */
+        return (int)(0.2126 * r + 0.7152 * g + 0.0722 * b) / 3;
     }
+
+
 
     private int countWhitePixels(int[][] bmp){
         int whiteCount = 0;
-        for(int i=0;i<bmp.length;i++){
-            for(int j=0;j<bmp[i].length;j++){
-                whiteCount += ((bmp[i][j] & 0xFF)> 220)? 1 :0;
+        for (int[] ints : bmp) {
+            for (int anInt : ints) {
+                whiteCount += ((anInt & 0xFF) > 220) ? 1 : 0;
             }
         }
 
@@ -1421,16 +1397,16 @@ public class ArduinoService extends Service {
     }
 
     static class PhotoRequest {
-        int id;
-        long shutter;
-        int wb;
-        int iso;
-        byte q;
-        boolean front;
-        boolean burst;
+        final int id;
+        final long shutter;
+        final int wb;
+        final int iso;
+        final byte q;
+        final boolean front;
+        final boolean burst;
         int burstId;
-        int burstDelay;
-        int burstLength;
+        final int burstDelay;
+        final int burstLength;
 
         PhotoRequest(int id, long shutter, int wb, int iso, byte q, boolean front, boolean burst, int delay, int length) {
             this.id = id;
@@ -1450,9 +1426,11 @@ public class ArduinoService extends Service {
             this.burstId =  burstId;
         }
 
+
+        @NonNull
         @Override
         public String toString() {
-            return String.format("id: %d, q: %d, front: %b, iso: %d, shutter: %d, wb: %s, burst: %b, burstId: %d, delay: %d", id, q, front, iso, shutter, wb, burst, burstId, burstDelay);
+            return String.format(Locale.US, "id: %d, q: %d, front: %b, iso: %d, shutter: %d, wb: %s, burst: %b, burstId: %d, delay: %d", id, q, front, iso, shutter, wb, burst, burstId, burstDelay);
         }
     }
 }

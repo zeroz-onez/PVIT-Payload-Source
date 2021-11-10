@@ -22,81 +22,87 @@
 package com.hoho.driver;
 
 import android.hardware.usb.UsbDeviceConnection;
-import android.hardware.usb.UsbManager;
 
 import java.io.IOException;
 
-/**
+/* 
  * Interface for a single serial port.
  *
  * @author mike wakerly (opensource@hoho.com)
  */
 public interface UsbSerialPort {
 
-    /** 5 data bits. */
+    /*  5 data bits. */
     int DATABITS_5 = 5;
 
-    /** 6 data bits. */
+    /*  6 data bits. */
     int DATABITS_6 = 6;
 
-    /** 7 data bits. */
+    /*  7 data bits. */
     int DATABITS_7 = 7;
 
-    /** 8 data bits. */
+    /*  8 data bits. */
     int DATABITS_8 = 8;
 
-    /** No flow control. */
+    /* * No flow control. */
+    @SuppressWarnings("unused")
     int FLOWCONTROL_NONE = 0;
 
-    /** RTS/CTS input flow control. */
+    /* * RTS/CTS input flow control. */
+    @SuppressWarnings("unused")
     int FLOWCONTROL_RTSCTS_IN = 1;
 
-    /** RTS/CTS output flow control. */
+    /* * RTS/CTS output flow control. */
+    @SuppressWarnings("unused")
     int FLOWCONTROL_RTSCTS_OUT = 2;
 
-    /** XON/XOFF input flow control. */
+    /* * XON/XOFF input flow control. */
+    @SuppressWarnings("unused")
     int FLOWCONTROL_XONXOFF_IN = 4;
 
-    /** XON/XOFF output flow control. */
+    /* * XON/XOFF output flow control. */
+    @SuppressWarnings("unused")
     int FLOWCONTROL_XONXOFF_OUT = 8;
 
-    /** No parity. */
+    /* * No parity. */
     int PARITY_NONE = 0;
 
-    /** Odd parity. */
+    /* * Odd parity. */
     int PARITY_ODD = 1;
 
-    /** Even parity. */
+    /* * Even parity. */
     int PARITY_EVEN = 2;
 
-    /** Mark parity. */
+    /* * Mark parity. */
     int PARITY_MARK = 3;
 
-    /** Space parity. */
+    /* * Space parity. */
     int PARITY_SPACE = 4;
 
-    /** 1 stop bit. */
+    /* * 1 stop bit. */
     int STOPBITS_1 = 1;
 
-    /** 1.5 stop bits. */
+    /* * 1.5 stop bits. */
     int STOPBITS_1_5 = 3;
 
-    /** 2 stop bits. */
+    /* * 2 stop bits. */
     int STOPBITS_2 = 2;
 
     UsbSerialDriver getDriver();
     
-    /**
+    /* *
      * Port number within driver.
      */
+    @SuppressWarnings("unused")
     int getPortNumber();
     
-    /**
+    /* *
      * The serial number of the underlying UsbDeviceConnection, or {@code null}.
      */
+    @SuppressWarnings("unused")
     String getSerial();
 
-    /**
+    /* *
      * Opens and initializes the port. Upon success, caller must ensure that
      * {@link #close()} is eventually called.
      *
@@ -106,14 +112,14 @@ public interface UsbSerialPort {
      */
     void open(UsbDeviceConnection connection) throws IOException;
 
-    /**
+    /* *
      * Closes the port.
      *
      * @throws IOException on error closing the port.
      */
     void close() throws IOException;
 
-    /**
+    /* *
      * Reads as many bytes as possible into the destination buffer.
      *
      * @param dest the destination byte buffer
@@ -121,9 +127,10 @@ public interface UsbSerialPort {
      * @return the actual number of bytes read
      * @throws IOException if an error occurred during reading
      */
+    @SuppressWarnings("unused")
     int read(final byte[] dest, final int timeoutMillis) throws IOException;
 
-    /**
+    /* *
      * Writes as many bytes as possible from the source buffer.
      *
      * @param src the source byte buffer
@@ -131,9 +138,9 @@ public interface UsbSerialPort {
      * @return the actual number of bytes written
      * @throws IOException if an error occurred during writing
      */
-    int write(final byte[] src, final int timeoutMillis) throws IOException;
+    void write(final byte[] src, final int timeoutMillis) throws IOException;
 
-    /**
+    /* *
      * Sets various serial port parameters.
      *
      * @param baudRate baud rate as an integer, for example {@code 115200}.
@@ -149,73 +156,81 @@ public interface UsbSerialPort {
     void setParameters(
             int baudRate, int dataBits, int stopBits, int parity) throws IOException;
 
-    /**
+    /* *
      * Gets the CD (Carrier Detect) bit from the underlying UART.
      *
      * @return the current state, or {@code false} if not supported.
      * @throws IOException if an error occurred during reading
      */
+    @SuppressWarnings("unused")
     boolean getCD() throws IOException;
 
-    /**
+    /* *
      * Gets the CTS (Clear To Send) bit from the underlying UART.
      *
      * @return the current state, or {@code false} if not supported.
      * @throws IOException if an error occurred during reading
      */
+    @SuppressWarnings("unused")
     boolean getCTS() throws IOException;
 
-    /**
+    /* *
      * Gets the DSR (Data Set Ready) bit from the underlying UART.
      *
      * @return the current state, or {@code false} if not supported.
      * @throws IOException if an error occurred during reading
      */
+    @SuppressWarnings("unused")
     boolean getDSR() throws IOException;
 
-    /**
+    /* *
      * Gets the DTR (Data Terminal Ready) bit from the underlying UART.
      *
      * @return the current state, or {@code false} if not supported.
      * @throws IOException if an error occurred during reading
      */
+    @SuppressWarnings("unused")
     boolean getDTR() throws IOException;
 
-    /**
+    /* *
      * Sets the DTR (Data Terminal Ready) bit on the underlying UART, if
      * supported.
      *
      * @param value the value to set
      * @throws IOException if an error occurred during writing
      */
+    @SuppressWarnings("unused")
     void setDTR(boolean value) throws IOException;
 
-    /**
+    /* *
      * Gets the RI (Ring Indicator) bit from the underlying UART.
      *
      * @return the current state, or {@code false} if not supported.
      * @throws IOException if an error occurred during reading
      */
+    @SuppressWarnings("unused")
     boolean getRI() throws IOException;
 
-    /**
+    /* *
      * Gets the RTS (Request To Send) bit from the underlying UART.
      *
      * @return the current state, or {@code false} if not supported.
      * @throws IOException if an error occurred during reading
      */
+    @SuppressWarnings("unused")
     boolean getRTS() throws IOException;
 
-    /**
+    /* *
      * Sets the RTS (Request To Send) bit on the underlying UART, if
      * supported.
      *
      * @param value the value to set
      * @throws IOException if an error occurred during writing
      */
+    @SuppressWarnings("unused")
     void setRTS(boolean value) throws IOException;
 
-    /**
+    /* *
      * Flush non-transmitted output data and / or non-read input data
      * @param flushRX {@code true} to flush non-transmitted output data
      * @param flushTX {@code true} to flush non-read input data
@@ -223,6 +238,7 @@ public interface UsbSerialPort {
      * {@code false} if the operation is not supported by the driver or device
      * @throws IOException if an error occurred during flush
      */
+    @SuppressWarnings("unused")
     boolean purgeHwBuffers(boolean flushRX, boolean flushTX) throws IOException;
 
 }

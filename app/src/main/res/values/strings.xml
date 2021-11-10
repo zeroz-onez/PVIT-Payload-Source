@@ -4,7 +4,11 @@
     <string name="app_title">USB Serial</string>
     <string name="app_name">Cube Serial</string>
     <string name="refreshing">Refreshing…</string>
-    <string name="textBtnRTS">RTS - Request To Send</string>
-    <string name="textBtnDTR">DTR - Data Terminal Ready</string>
+    <string name="mTitleConnect">Connected</string>
+    <string name="mTitleDisconnect">Disconnect</string>
+    <string name="mTitlePlugUnplugMsg">Unplug Arduino and plug it back to reconnect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="auto_scroll">Auto scroll</string>
+    <string name="messageReconnect">Unplug Arduino and plug it back to reconnect</string>
 
 </resources>

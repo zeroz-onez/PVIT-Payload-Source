@@ -99,6 +99,7 @@ public class FtdiSerialDriver implements UsbSerialDriver {
      * FTDI chip types.
      */
     private enum DeviceType {
+        @SuppressWarnings("unused")
         TYPE_BM, TYPE_AM, TYPE_2232C, TYPE_R, TYPE_2232H, TYPE_4232H
     }
 
@@ -123,20 +124,28 @@ public class FtdiSerialDriver implements UsbSerialDriver {
     @SuppressWarnings("PointlessBitwiseExpression")
     private class FtdiSerialPort extends CommonUsbSerialPort {
 
+        @SuppressWarnings("unused")
         public static final int USB_TYPE_STANDARD = 0x00 << 5;
+        @SuppressWarnings("unused")
         public static final int USB_TYPE_CLASS = 0x00 << 5;
+        @SuppressWarnings("unused")
         public static final int USB_TYPE_VENDOR = 0x00 << 5;
+        @SuppressWarnings("unused")
         public static final int USB_TYPE_RESERVED = 0x00 << 5;
 
         public static final int USB_RECIP_DEVICE = 0x00;
+        @SuppressWarnings("unused")
         public static final int USB_RECIP_INTERFACE = 0x01;
+        @SuppressWarnings("unused")
         public static final int USB_RECIP_ENDPOINT = 0x02;
+        @SuppressWarnings("unused")
         public static final int USB_RECIP_OTHER = 0x03;
 
         public static final int USB_ENDPOINT_IN = 0x80;
         public static final int USB_ENDPOINT_OUT = 0x00;
 
         public static final int USB_WRITE_TIMEOUT_MILLIS = 5000;
+        @SuppressWarnings("unused")
         public static final int USB_READ_TIMEOUT_MILLIS = 5000;
 
         // From ftdi.h
@@ -148,11 +157,13 @@ public class FtdiSerialDriver implements UsbSerialDriver {
         /**
          * Set the modem control register.
          */
+        @SuppressWarnings("unused")
         private static final int SIO_MODEM_CTRL_REQUEST = 1;
 
         /**
          * Set flow control register.
          */
+        @SuppressWarnings("unused")
         private static final int SIO_SET_FLOW_CTRL_REQUEST = 2;
 
         /**
@@ -172,6 +183,7 @@ public class FtdiSerialDriver implements UsbSerialDriver {
         public static final int FTDI_DEVICE_OUT_REQTYPE =
                 UsbConstants.USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_OUT;
 
+        @SuppressWarnings("unused")
         public static final int FTDI_DEVICE_IN_REQTYPE =
                 UsbConstants.USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN;
 
@@ -275,6 +287,7 @@ public class FtdiSerialDriver implements UsbSerialDriver {
             }
         }
 
+        @SuppressWarnings("unused")
         @Override
         public int read(byte[] dest, int timeoutMillis) throws IOException {
             final UsbEndpoint endpoint = mDevice.getInterface(mPortNumber).getEndpoint(0);
@@ -303,7 +316,7 @@ public class FtdiSerialDriver implements UsbSerialDriver {
         }
 
         @Override
-        public int write(byte[] src, int timeoutMillis) throws IOException {
+        public void write(byte[] src, int timeoutMillis) throws IOException {
             final UsbEndpoint endpoint = mDevice.getInterface(mPortNumber).getEndpoint(1);
             int offset = 0;
 
@@ -335,11 +348,11 @@ public class FtdiSerialDriver implements UsbSerialDriver {
                 Log.d(TAG, "Wrote amtWritten=" + amtWritten + " attempted=" + writeLength);
                 offset += amtWritten;
             }
-            return offset;
         }
 
-        private int setBaudRate(int baudRate) throws IOException {
+        private void setBaudRate(int baudRate) throws IOException {
             long[] vals = convertBaudrate(baudRate);
+            @SuppressWarnings("unused")
             long actualBaudrate = vals[0];
             long index = vals[1];
             long value = vals[2];
@@ -349,7 +362,6 @@ public class FtdiSerialDriver implements UsbSerialDriver {
             if (result != 0) {
                 throw new IOException("Setting baudrate failed: result=" + result);
             }
-            return (int) actualBaudrate;
         }
 
         @Override
@@ -437,6 +449,7 @@ public class FtdiSerialDriver implements UsbSerialDriver {
                     // AM doesn't support divisors 9 through 15 inclusive
                     tryDivisor = 16;
                 } else {
+                    //noinspection StatementWithEmptyBody
                     if (mType == DeviceType.TYPE_AM) {
                         // TODO
                     } else {
@@ -496,44 +509,53 @@ public class FtdiSerialDriver implements UsbSerialDriver {
             };
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getCD() throws IOException {
             return false;
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getCTS() throws IOException {
             return false;
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getDSR() throws IOException {
             return false;
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getDTR() throws IOException {
             return false;
         }
 
+        @SuppressWarnings("unused")
         @Override
         public void setDTR(boolean value) throws IOException {
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getRI() throws IOException {
             return false;
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getRTS() throws IOException {
             return false;
         }
 
+        @SuppressWarnings("unused")
         @Override
         public void setRTS(boolean value) throws IOException {
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean purgeHwBuffers(boolean purgeReadBuffers, boolean purgeWriteBuffers) throws IOException {
             if (purgeReadBuffers) {
@@ -555,6 +577,7 @@ public class FtdiSerialDriver implements UsbSerialDriver {
         }
     }
 
+    @SuppressWarnings("unused")
     public static Map<Integer, int[]> getSupportedDevices() {
         final Map<Integer, int[]> supportedDevices = new LinkedHashMap<>();
         supportedDevices.put(UsbId.VENDOR_FTDI,

@@ -1,4 +1,4 @@
-com.example.arduinoserial	DeviceListActivity.java	/^package com.example.arduinoserial;$/;"	p
+com.seakingspace.arduinoserial	DeviceListActivity.java	/^package com.seakingspace.arduinoserial;$/;"	p
 DeviceListActivity	DeviceListActivity.java	/^public class DeviceListActivity extends Activity {$/;"	c
 TAG	DeviceListActivity.java	/^    private final String TAG = DeviceListActivity.class.getSimpleName();$/;"	f	class:DeviceListActivity	file:
 mUsbManager	DeviceListActivity.java	/^    private UsbManager mUsbManager;$/;"	f	class:DeviceListActivity	file:
@@ -18,7 +18,7 @@ refreshDeviceList	DeviceListActivity.java	/^    private void refreshDeviceList()
 showProgressBar	DeviceListActivity.java	/^    private void showProgressBar() {$/;"	m	class:DeviceListActivity	file:
 hideProgressBar	DeviceListActivity.java	/^    private void hideProgressBar() {$/;"	m	class:DeviceListActivity	file:
 showConsoleActivity	DeviceListActivity.java	/^    private void showConsoleActivity(UsbSerialPort port) {$/;"	m	class:DeviceListActivity	file:
-com.example.arduinoserial	SerialConsoleActivity.java	/^package com.example.arduinoserial;$/;"	p
+com.seakingspace.arduinoserial	SerialConsoleActivity.java	/^package com.seakingspace.arduinoserial;$/;"	p
 SerialConsoleActivity	SerialConsoleActivity.java	/^public class SerialConsoleActivity extends Activity {$/;"	c
 TAG	SerialConsoleActivity.java	/^    private final String TAG = SerialConsoleActivity.class.getSimpleName();$/;"	f	class:SerialConsoleActivity	file:
 BAUD_RATE	SerialConsoleActivity.java	/^    private static final int BAUD_RATE = 115200;$/;"	f	class:SerialConsoleActivity	file:

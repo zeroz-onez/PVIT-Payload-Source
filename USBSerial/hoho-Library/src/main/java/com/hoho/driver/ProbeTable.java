@@ -27,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /* *
  * Maps (vendor id, product id) pairs to the corresponding serial driver.
@@ -47,10 +48,9 @@ public class ProbeTable {
      * @param driverClass the driver class responsible for this pair
      * @return {@code this}, for chaining
      */
-    public ProbeTable addProduct(int vendorId, int productId,
-            Class<? extends UsbSerialDriver> driverClass) {
+    public void addProduct(int vendorId, int productId,
+                           Class<? extends UsbSerialDriver> driverClass) {
         mProbeTable.put(Pair.create(vendorId, productId), driverClass);
-        return this;
     }
 
     /* *
@@ -61,7 +61,7 @@ public class ProbeTable {
      * @return
      */
 
-    ProbeTable addDriver(Class<? extends UsbSerialDriver> driverClass) {
+    void addDriver(Class<? extends UsbSerialDriver> driverClass) {
         final Method method;
 
         try {
@@ -72,19 +72,20 @@ public class ProbeTable {
 
         final Map<Integer, int[]> devices;
         try {
+            // TODO Find fix for unchecked cast in following (e.g. perhaps convert to string...)
+            //noinspection unchecked
             devices = (Map<Integer, int[]>) method.invoke(null);
         } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
 
-        for (Map.Entry<Integer, int[]> entry : devices.entrySet()) {
+        for (Map.Entry<Integer, int[]> entry : Objects.requireNonNull(devices).entrySet()) {
             final int vendorId = entry.getKey();
             for (int productId : entry.getValue()) {
                 addProduct(vendorId, productId, driverClass);
             }
         }
 
-        return this;
     }
 
     /* *

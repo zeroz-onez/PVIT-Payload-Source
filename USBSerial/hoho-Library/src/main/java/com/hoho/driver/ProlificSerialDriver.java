@@ -135,8 +135,9 @@ public class ProlificSerialDriver implements UsbSerialDriver {
             return ProlificSerialDriver.this;
         }
 
-        private byte[] inControlTransfer(int requestType, int request,
-                                         int value, int index, int length) throws IOException {
+        @SuppressWarnings("SameParameterValue")
+        private void inControlTransfer(int requestType, int request,
+                                       int value, int index, int length) throws IOException {
             byte[] buffer = new byte[length];
             int result = mConnection.controlTransfer(requestType, request, value,
                     index, buffer, length, USB_READ_TIMEOUT_MILLIS);
@@ -145,7 +146,6 @@ public class ProlificSerialDriver implements UsbSerialDriver {
                         String.format("ControlTransfer with value 0x%x failed: %d",
                                 value, result));
             }
-            return buffer;
         }
 
         private void outControlTransfer(int requestType, int request,
@@ -160,12 +160,14 @@ public class ProlificSerialDriver implements UsbSerialDriver {
             }
         }
 
-        private byte[] vendorIn(int value, int index, int length)
+        @SuppressWarnings("SameParameterValue")
+        private void vendorIn(int value, int index, int length)
                 throws IOException {
-            return inControlTransfer(PROLIFIC_VENDOR_IN_REQTYPE,
+            inControlTransfer(PROLIFIC_VENDOR_IN_REQTYPE,
                     PROLIFIC_VENDOR_READ_REQUEST, value, index, length);
         }
 
+        @SuppressWarnings("SameParameterValue")
         private void vendorOut(int value, int index, byte[] data)
                 throws IOException {
             outControlTransfer(PROLIFIC_VENDOR_OUT_REQTYPE,
@@ -176,6 +178,7 @@ public class ProlificSerialDriver implements UsbSerialDriver {
             purgeHwBuffers(true, true);
         }
 
+        @SuppressWarnings("SameParameterValue")
         private void ctrlOut(int request, int value, int index, byte[] data)
                 throws IOException {
             outControlTransfer(PROLIFIC_CTRL_OUT_REQTYPE, request, value, index,
@@ -302,6 +305,7 @@ public class ProlificSerialDriver implements UsbSerialDriver {
                             = mConnection.getClass().getMethod("getRawDescriptors");
                         byte[] rawDescriptors
                             = (byte[]) getRawDescriptorsMethod.invoke(mConnection);
+                        assert rawDescriptors != null;
                         byte maxPacketSize0 = rawDescriptors[7];
                         if (maxPacketSize0 == 64) {
                             mDeviceType = DEVICE_TYPE_HX;
@@ -363,6 +367,7 @@ public class ProlificSerialDriver implements UsbSerialDriver {
             }
         }
 
+        @SuppressWarnings("unused")
         @Override
         public int read(byte[] dest, int timeoutMillis) throws IOException {
             final UsbRequest request = new UsbRequest();
@@ -387,7 +392,7 @@ public class ProlificSerialDriver implements UsbSerialDriver {
         }
 
         @Override
-        public int write(byte[] src, int timeoutMillis) throws IOException {
+        public void write(byte[] src, int timeoutMillis) throws IOException {
             int offset = 0;
 
             while (offset < src.length) {
@@ -418,7 +423,6 @@ public class ProlificSerialDriver implements UsbSerialDriver {
 
                 offset += amtWritten;
             }
-            return offset;
         }
 
         @Override
@@ -491,26 +495,31 @@ public class ProlificSerialDriver implements UsbSerialDriver {
             mParity = parity;
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getCD() throws IOException {
             return testStatusFlag(STATUS_FLAG_CD);
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getCTS() throws IOException {
             return testStatusFlag(STATUS_FLAG_CTS);
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getDSR() throws IOException {
             return testStatusFlag(STATUS_FLAG_DSR);
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getDTR() throws IOException {
             return ((mControlLinesValue & CONTROL_DTR) == CONTROL_DTR);
         }
 
+        @SuppressWarnings("unused")
         @Override
         public void setDTR(boolean value) throws IOException {
             int newControlLinesValue;
@@ -522,16 +531,19 @@ public class ProlificSerialDriver implements UsbSerialDriver {
             setControlLines(newControlLinesValue);
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getRI() throws IOException {
             return testStatusFlag(STATUS_FLAG_RI);
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getRTS() throws IOException {
             return ((mControlLinesValue & CONTROL_RTS) == CONTROL_RTS);
         }
 
+        @SuppressWarnings("unused")
         @Override
         public void setRTS(boolean value) throws IOException {
             int newControlLinesValue;
@@ -557,6 +569,7 @@ public class ProlificSerialDriver implements UsbSerialDriver {
         }
     }
 
+    @SuppressWarnings("unused")
     public static Map<Integer, int[]> getSupportedDevices() {
         final Map<Integer, int[]> supportedDevices = new LinkedHashMap<>();
         supportedDevices.put(UsbId.VENDOR_PROLIFIC,

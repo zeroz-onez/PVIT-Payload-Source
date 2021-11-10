@@ -90,6 +90,7 @@ public class SerialInputOutputManager implements Runnable {
         mListener = listener;
     }
 
+    @SuppressWarnings("unused")
     public synchronized void setListener(Listener listener) {
         mListener = listener;
     }
@@ -97,7 +98,7 @@ public class SerialInputOutputManager implements Runnable {
     public synchronized Listener getListener() {
         return mListener;
     }
-
+    @SuppressWarnings("unused")
     public void writeAsync(byte[] data) {
         synchronized (mWriteBuffer) {
             mWriteBuffer.put(data);

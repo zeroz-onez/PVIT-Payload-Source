@@ -84,8 +84,10 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
         private static final int USB_RT_ACM = UsbConstants.USB_TYPE_CLASS | USB_RECIP_INTERFACE;
 
         private static final int SET_LINE_CODING = 0x20;  // USB CDC 1.1 section 6.2
+        @SuppressWarnings("unused")
         private static final int GET_LINE_CODING = 0x21;
         private static final int SET_CONTROL_LINE_STATE = 0x22;
+        @SuppressWarnings("unused")
         private static final int SEND_BREAK = 0x23;
 
         public CdcAcmSerialPort(UsbDevice device, int portNumber) {
@@ -239,13 +241,12 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
             }
         }
 
-        private int sendAcmControlMessage(int request, int value, byte[] buf) throws IOException {
+        private void sendAcmControlMessage(int request, int value, byte[] buf) throws IOException {
             int len = mConnection.controlTransfer(
                     USB_RT_ACM, request, value, mControlIndex, buf, buf != null ? buf.length : 0, 5000);
             if(len < 0) {
                 throw new IOException("controlTransfer failed.");
             }
-            return len;
         }
 
         @Override
@@ -257,6 +258,7 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
             mConnection = null;
         }
 
+        @SuppressWarnings("unused")
         @Override
         public int read(byte[] dest, int timeoutMillis) throws IOException {
             final UsbRequest request = new UsbRequest();
@@ -281,7 +283,7 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
         }
 
         @Override
-        public int write(byte[] src, int timeoutMillis) throws IOException {
+        public void write(byte[] src, int timeoutMillis) throws IOException {
             // TODO(mikey): Nearly identical to FtdiSerial write. Refactor.
             int offset = 0;
 
@@ -312,7 +314,6 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
                 Log.d(TAG, "Wrote amt=" + amtWritten + " attempted=" + writeLength);
                 offset += amtWritten;
             }
-            return offset;
         }
 
         @Override
@@ -346,42 +347,50 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
             sendAcmControlMessage(SET_LINE_CODING, 0, msg);
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getCD() throws IOException {
             return false;  // TODO
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getCTS() throws IOException {
             return false;  // TODO
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getDSR() throws IOException {
             return false;  // TODO
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getDTR() throws IOException {
             return mDtr;
         }
 
+        @SuppressWarnings("unused")
         @Override
         public void setDTR(boolean value) throws IOException {
             mDtr = value;
             setDtrRts();
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getRI() throws IOException {
             return false;  // TODO
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getRTS() throws IOException {
             return mRts;
         }
 
+        @SuppressWarnings("unused")
         @Override
         public void setRTS(boolean value) throws IOException {
             mRts = value;
@@ -394,7 +403,7 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
         }
 
     }
-
+    @SuppressWarnings("unused")
     public static Map<Integer, int[]> getSupportedDevices() {
         final Map<Integer, int[]> supportedDevices = new LinkedHashMap<>();
         supportedDevices.put(UsbId.VENDOR_ARDUINO,

@@ -21,13 +21,11 @@
 
 package com.seakingspace.arduinoserial;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -35,11 +33,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.seakingspace.arduinoserial.R;
 import com.hoho.driver.UsbSerialPort;
 
 
@@ -76,40 +72,20 @@ public class SerialConsoleActivity extends Activity implements ArduinoService.Ca
         mDumpTextView = findViewById(R.id.consoleText);
         mScrollView = findViewById(R.id.demoScroller);
 
-        findViewById(R.id.disconnectButton).setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onClick(View view) {
-                Button btn = (Button) view;
-                if (btn.getText().equals("Disconnect")) {
-                    mService.stopSelf();
-                    btn.setEnabled(false);
-                    btn.setText("Unplug Arduino and plug it back to reconnect");
-                }
+        findViewById(R.id.disconnectButton).setOnClickListener(view -> {
+            Button btn = (Button) view;
+            if (btn.getText().equals("Disconnect")) {
+                mService.stopSelf();
+                btn.setEnabled(false);
+                btn.setText(R.string.messageReconnect);
             }
         });
 
-        ((CheckBox) findViewById(R.id.autoScrollCheckBox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                autoScroll = b;
-            }
-        });
+        ((CheckBox) findViewById(R.id.autoScrollCheckBox)).setOnCheckedChangeListener((compoundButton, b) -> autoScroll = b);
 
         Intent service = new Intent(this, ArduinoService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(service);
-        }
-        else {
-            startService(service);
-        }
+        startForegroundService(service);
         bindService(service, this, BIND_IMPORTANT);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //TODO
     }
 
     private void print(String text) {
@@ -132,30 +108,24 @@ public class SerialConsoleActivity extends Activity implements ArduinoService.Ca
 
     @Override
     public void onConnected() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mTitleTextView.setText("Connected");
-                ((Button) findViewById(R.id.disconnectButton)).setText("Disconnect");
+        runOnUiThread(() -> {
+            mTitleTextView.setText(R.string.mTitleConnect);
+            ((Button) findViewById(R.id.disconnectButton)).setText(R.string.mTitleDisconnect);
 
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            }
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         });
     }
 
     @Override
     public void onError(final String error) {
         Log.e(TAG, "serial console activity service onError: " + error);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mTitleTextView.setText(error);
-                Button btn = findViewById(R.id.disconnectButton);
-                btn.setEnabled(false);
-                btn.setText("Unplug Arduino and plug it back to reconnect");
+        runOnUiThread(() -> {
+            mTitleTextView.setText(error);
+            Button btn = findViewById(R.id.disconnectButton);
+            btn.setEnabled(false);
+            btn.setText(R.string.mTitlePlugUnplugMsg);
 
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            }
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         });
 
         if (mService != null) {
@@ -165,22 +135,12 @@ public class SerialConsoleActivity extends Activity implements ArduinoService.Ca
 
     @Override
     public void onMessageReceived(final String message) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                print(message);
-            }
-        } );
+        runOnUiThread(() -> print(message));
     }
 
     @Override
     public void onMessageSent(final String message) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                print(message);
-            }
-        } );
+        runOnUiThread(() -> print(message));
 
     }
 
@@ -198,7 +158,7 @@ public class SerialConsoleActivity extends Activity implements ArduinoService.Ca
     public void onServiceDisconnected(ComponentName componentName) {
         mService = null;
         Log.e(TAG, "onServiceDisconnected: service disconnected");
-        //onError("service disconnected");
-        //finish();
+
+        /* Removed calls to onError("service disconnected") & finish() */
     }
 }

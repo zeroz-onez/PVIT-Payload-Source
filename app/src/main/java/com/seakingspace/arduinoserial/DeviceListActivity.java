@@ -37,7 +37,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -63,7 +62,6 @@ public class DeviceListActivity extends Activity {
     private final String TAG = DeviceListActivity.class.getSimpleName();
 
     private UsbManager mUsbManager;
-    private ListView mListView;
     private TextView mProgressBarTitle;
     private ProgressBar mProgressBar;
 
@@ -89,7 +87,7 @@ public class DeviceListActivity extends Activity {
 
     };
 
-    private List<UsbSerialPort> mEntries = new ArrayList<>();
+    private final List<UsbSerialPort> mEntries = new ArrayList<>();
     private ArrayAdapter<UsbSerialPort> mAdapter;
 
 
@@ -99,7 +97,7 @@ public class DeviceListActivity extends Activity {
         setContentView(R.layout.main);
 
         mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        mListView = findViewById(R.id.deviceList);
+        ListView mListView = findViewById(R.id.deviceList);
         mProgressBar = findViewById(R.id.progressBar);
         mProgressBarTitle = findViewById(R.id.progressBarTitle);
 
@@ -118,12 +116,10 @@ public class DeviceListActivity extends Activity {
 
                 final UsbSerialPort port = mEntries.get(position);
                 final UsbSerialDriver driver = port.getDriver();
+                @SuppressWarnings("unused")
                 final UsbDevice device = driver.getDevice();
 
-                /*final String title = String.format("Vendor %s Product %s",
-                        HexDump.toHexString((short) device.getVendorId()),
-                        HexDump.toHexString((short) device.getProductId()));
-                row.getText1().setText(title);*/
+                /* Removed call to Str Title Field */
 
                 final String subtitle = driver.getClass().getSimpleName();
                 row.getText2().setText(subtitle);
@@ -134,18 +130,15 @@ public class DeviceListActivity extends Activity {
         };
         mListView.setAdapter(mAdapter);
 
-        mListView.setOnItemClickListener(new ListView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "Pressed item " + position);
-                if (position >= mEntries.size()) {
-                    Log.w(TAG, "Illegal position.");
-                    return;
-                }
-
-                final UsbSerialPort port = mEntries.get(position);
-                showConsoleActivity(port);
+        mListView.setOnItemClickListener((parent, view, position, id) -> {
+            Log.d(TAG, "Pressed item " + position);
+            if (position >= mEntries.size()) {
+                Log.w(TAG, "Illegal position.");
+                return;
             }
+
+            final UsbSerialPort port = mEntries.get(position);
+            showConsoleActivity(port);
         });
 
         boolean cameraPermission, locationPermission, storagePermission;

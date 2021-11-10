@@ -156,6 +156,7 @@ public class Ch34xSerialDriver implements UsbSerialDriver {
 		}
 
 
+		@SuppressWarnings("unused")
 		@Override
 		public int read(byte[] dest, int timeoutMillis) throws IOException {
 			final UsbRequest request = new UsbRequest();
@@ -184,7 +185,7 @@ public class Ch34xSerialDriver implements UsbSerialDriver {
 		}
 
 		@Override
-		public int write(byte[] src, int timeoutMillis) throws IOException {
+		public void write(byte[] src, int timeoutMillis) throws IOException {
 			int offset = 0;
 
 			while (offset < src.length) {
@@ -214,7 +215,6 @@ public class Ch34xSerialDriver implements UsbSerialDriver {
 				Log.d(TAG, "Wrote amt=" + amtWritten + " attempted=" + writeLength);
 				offset += amtWritten;
 			}
-			return offset;
 		}
 
 		private int controlOut(int request, int value, int index) {
@@ -224,6 +224,7 @@ public class Ch34xSerialDriver implements UsbSerialDriver {
 		}
 
 
+		@SuppressWarnings("SameParameterValue")
 		private int controlIn(int request, int value, int index, byte[] buffer) {
 			final int REQTYPE_HOST_TO_DEVICE = UsbConstants.USB_TYPE_VENDOR | UsbConstants.USB_DIR_IN;
 			return mConnection.controlTransfer(REQTYPE_HOST_TO_DEVICE, request,
@@ -319,6 +320,7 @@ public class Ch34xSerialDriver implements UsbSerialDriver {
 			}
 		}
 
+		@SuppressWarnings("ConstantConditions")
 		@Override
 		public void setParameters(int baudRate, int dataBits, int stopBits, int parity)
 				throws IOException {
@@ -380,55 +382,64 @@ public class Ch34xSerialDriver implements UsbSerialDriver {
 			}
 		}
 
+		@SuppressWarnings("unused")
 		@Override
 		public boolean getCD() throws IOException {
 			return false;
 		}
 
+		@SuppressWarnings("unused")
 		@Override
 		public boolean getCTS() throws IOException {
 			return false;
 		}
 
+		@SuppressWarnings("unused")
 		@Override
 		public boolean getDSR() throws IOException {
 			return false;
 		}
 
+		@SuppressWarnings("unused")
 		@Override
 		public boolean getDTR() throws IOException {
 			return dtr;
 		}
 
+		@SuppressWarnings("unused")
 		@Override
 		public void setDTR(boolean value) throws IOException {
 			dtr = value;
 			writeHandshakeByte();
 		}
 
+		@SuppressWarnings("unused")
 		@Override
 		public boolean getRI() throws IOException {
 			return false;
 		}
 
+		@SuppressWarnings("unused")
 		@Override
 		public boolean getRTS() throws IOException {
 			return rts;
 		}
 
+		@SuppressWarnings("unused")
 		@Override
 		public void setRTS(boolean value) throws IOException {
 			rts = value;
 			writeHandshakeByte();
 		}
 
+		@SuppressWarnings("unused")
 		@Override
 		public boolean purgeHwBuffers(boolean purgeReadBuffers, boolean purgeWriteBuffers) throws IOException {
 			return true;
 		}
 
 	}
-
+	@SuppressWarnings("unused")
 	public static Map<Integer, int[]> getSupportedDevices() {
 		final Map<Integer, int[]> supportedDevices = new LinkedHashMap<>();
 		supportedDevices.put(UsbId.VENDOR_QINHENG, new int[]{

@@ -99,7 +99,9 @@ public class Cp21xxSerialDriver implements UsbSerialDriver {
         /*
          * SILABSER_SET_MHS_REQUEST_CODE
          */
+        @SuppressWarnings("unused")
         private static final int MCR_DTR = 0x0001;
+        @SuppressWarnings("unused")
         private static final int MCR_RTS = 0x0002;
         private static final int MCR_ALL = 0x0003;
 
@@ -123,8 +125,8 @@ public class Cp21xxSerialDriver implements UsbSerialDriver {
             return Cp21xxSerialDriver.this;
         }
 
-        private int setConfigSingle(int request, int value) {
-            return mConnection.controlTransfer(REQTYPE_HOST_TO_DEVICE, request, value,
+        private void setConfigSingle(int request, int value) {
+            mConnection.controlTransfer(REQTYPE_HOST_TO_DEVICE, request, value,
                     mPortNumber, null, 0, USB_WRITE_TIMEOUT_MILLIS);
         }
 
@@ -193,6 +195,7 @@ public class Cp21xxSerialDriver implements UsbSerialDriver {
             }
         }
 
+        @SuppressWarnings("unused")
         @Override
         public int read(byte[] dest, int timeoutMillis) throws IOException {
             final UsbRequest request = new UsbRequest();
@@ -221,7 +224,7 @@ public class Cp21xxSerialDriver implements UsbSerialDriver {
         }
 
         @Override
-        public int write(byte[] src, int timeoutMillis) throws IOException {
+        public void write(byte[] src, int timeoutMillis) throws IOException {
             int offset = 0;
 
             while (offset < src.length) {
@@ -251,7 +254,6 @@ public class Cp21xxSerialDriver implements UsbSerialDriver {
                 Log.d(TAG, "Wrote amt=" + amtWritten + " attempted=" + writeLength);
                 offset += amtWritten;
             }
-            return offset;
         }
 
         private void setBaudRate(int baudRate) throws IOException {
@@ -336,44 +338,53 @@ public class Cp21xxSerialDriver implements UsbSerialDriver {
             setConfigSingle(SILABSER_SET_LINE_CTL_REQUEST_CODE, configDataBits);
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getCD() throws IOException {
             return false;
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getCTS() throws IOException {
             return false;
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getDSR() throws IOException {
             return false;
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getDTR() throws IOException {
             return true;
         }
 
+        @SuppressWarnings("unused")
         @Override
         public void setDTR(boolean value) throws IOException {
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getRI() throws IOException {
             return false;
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean getRTS() throws IOException {
             return true;
         }
 
+        @SuppressWarnings("unused")
         @Override
         public void setRTS(boolean value) throws IOException {
         }
 
+        @SuppressWarnings("unused")
         @Override
         public boolean purgeHwBuffers(boolean purgeReadBuffers,
                 boolean purgeWriteBuffers) throws IOException {
@@ -388,7 +399,7 @@ public class Cp21xxSerialDriver implements UsbSerialDriver {
         }
 
     }
-
+    @SuppressWarnings("unused")
     public static Map<Integer, int[]> getSupportedDevices() {
         final Map<Integer, int[]> supportedDevices = new LinkedHashMap<>();
         supportedDevices.put(UsbId.VENDOR_SILABS,
